@@ -195,7 +195,7 @@ loadJSON('vehicles.json',
             var ven = data[i];
             switch(ven.type){
                 case 'boat':
-                    boats.push(new Boat(ven.name, ven.speed, ven.capacity, ven.mPower));
+                    boats.push(new Boat(ven.name, ven.speed, ven.capacity, ven.maxpower));
                     break;
                 case 'auto':
                     autos.push(new Automobile(ven.name, ven.speed, ven.capacity, ven.body));
