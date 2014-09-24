@@ -1,4 +1,8 @@
-// IE7 trick
+/**
+ * IE7 trick
+ * @param Child
+ * @param Parent
+ */
 function inherit(Child, Parent)
 {
     var F = function () { };
@@ -10,8 +14,23 @@ function inherit(Child, Parent)
     Child.prototype.super = Parent.prototype;
 }
 
-// Parent class
+/**
+ * Parent class
+ * @param name
+ * @param speed
+ * @param capacity
+ * @constructor
+ */
 function Vehicle(name, speed, capacity){
+
+    //validate data
+
+    if(typeof(name) != 'string')
+        throw new Error('Name must have string type!');
+    if(typeof(speed) != 'number')
+        throw new Error('Speed must have integer type!');
+    if(typeof(capacity) != 'number')
+        throw new Error('Capacity must have integer type!');
 
     // no table for 'abstract' class
     this.tblName = '';
@@ -22,20 +41,42 @@ function Vehicle(name, speed, capacity){
     this.capacity = capacity;
 }
 
+/**
+ * Get table name and set object
+ */
 Vehicle.prototype.getPlace = function(){
+    if(this.tblName == ''){
+        throw new Error('Empty table name!');
+    }
     this.table = document.getElementById(this.tblName);
-}
+    if(this.table === null){
+        throw new Error('Cant find table with id: ' + this.tblName);
+    }
+};
 
 
 
 // Children
+
+/**
+ *
+ * @param name
+ * @param speed
+ * @param capacity
+ * @param body
+ * @constructor
+ */
 function Automobile(name, speed, capacity, body){
+    if(typeof(body) != 'string')
+        throw new Error('Body must have string type!');
     Vehicle.apply(this, arguments);
     this.tblName = 'tbl_auto';
     this.body = body;
 
 }
-
+/**
+ * Insert Automobile row into table
+ */
 Automobile.prototype.insertRow = function(){
     this.table.innerHTML +=
         '<tr>' +
@@ -45,36 +86,58 @@ Automobile.prototype.insertRow = function(){
             '<td>'+this.body+'</td>'+
         '</tr>';
 
-}
+};
 
 inherit(Automobile, Vehicle);
 
 
-
+/**
+ *
+ * @param name
+ * @param speed
+ * @param capacity
+ * @param wingspan
+ * @constructor
+ */
 function Airplane(name, speed, capacity, wingspan){
+    if(typeof(wingspan) != 'number')
+        throw new Error('Wingspan must have integer type!');
     Vehicle.apply(this, arguments);
     this.tblName = 'tbl_air';
     this.wingspan = wingspan;
 }
-
-Airplane.prototype.insertRow = function(){
+/**
+ * Insert Airplane row into table
+ */
+Airplane.prototype.insertRow = function () {
     this.table.innerHTML +=
         '<tr>' +
-            '<td>'+this.name+'</td>'+
-            '<td>'+this.speed+'</td>'+
-            '<td>'+this.capacity+'</td>'+
-            '<td>'+this.wingspan+'</td>'+
-            '</tr>';
+            '<td>' + this.name + '</td>' +
+            '<td>' + this.speed + '</td>' +
+            '<td>' + this.capacity + '</td>' +
+            '<td>' + this.wingspan + '</td>' +
+        '</tr>';
 
-}
+};
 inherit(Airplane, Vehicle);
 
+/**
+ *
+ * @param name
+ * @param speed
+ * @param capacity
+ * @param mPower
+ * @constructor
+ */
 function Boat(name, speed, capacity, mPower){
     Vehicle.apply(this,arguments);
     this.tblName = 'tbl_boat';
     this.mPower = mPower;
 
 }
+/**
+ * Insert Boat row into table
+ */
 Boat.prototype.insertRow = function(){
     this.table.innerHTML +=
         '<tr>' +
@@ -82,13 +145,19 @@ Boat.prototype.insertRow = function(){
             '<td>'+this.speed+'</td>'+
             '<td>'+this.capacity+'</td>'+
             '<td>'+this.mPower+'</td>'+
-            '</tr>';
+        '</tr>';
 
-}
+};
 inherit(Boat, Vehicle);
 
 // JSON parse
 
+/**
+ * Load JSON file from server
+ * @param path
+ * @param success
+ * @param error
+ */
 function loadJSON(path, success, error)
 {
     var xhr = new XMLHttpRequest();
@@ -109,8 +178,12 @@ function loadJSON(path, success, error)
 }
 
 
-
 loadJSON('vehicles.json',
+
+    /**
+     * Main func, creating 3 data arrays and filling tables
+     * @param data
+     */
     function(data) {
 
         var boats = [];
@@ -155,3 +228,29 @@ loadJSON('vehicles.json',
     function(xhr) { console.error(xhr); }
 );
 
+
+
+// Some kind of unit-tests
+
+function testIsHaveTblName(){
+    var boat = new Boat('name', 100, 10, 1000);
+
+    if(boat.tblName == '')
+        throw new Error('* FAILED *  --- ' +arguments.callee.name);
+    else
+        throw new Error('* PASSED * --- '+ arguments.callee.name);
+}
+
+function testIsHaveTable(){
+    var boat = new Boat('name', 100, 10, 1000);
+
+    if(boat.table === null)
+        throw new Error('* FAILED *  --- ' +arguments.callee.name);
+    else
+        throw new Error('* PASSED * --- '+ arguments.callee.name);
+}
+
+
+lalka = new Boat(100,12,23,45);
+//testIsHaveTblName();
+//testIsHaveTable();
