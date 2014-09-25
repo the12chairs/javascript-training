@@ -232,25 +232,52 @@ loadJSON('vehicles.json',
 
 // Some kind of unit-tests
 
+
+Object.prototype.getName = function() {
+    var funcNameRegex = /function (.{1,})\(/;
+    var results = (funcNameRegex).exec((this).constructor.toString());
+    return (results && results.length > 1) ? results[1] : "";
+};
+
+
+
 function testIsHaveTblName(){
     var boat = new Boat('name', 100, 10, 1000);
 
     if(boat.tblName == '')
-        throw new Error('* FAILED *  --- ' +arguments.callee.name);
+        console.log('* FAILED *  --- ' +arguments.callee.name);
     else
-        throw new Error('* PASSED * --- '+ arguments.callee.name);
+        console.log('* PASSED * --- '+ arguments.callee.name);
 }
 
 function testIsHaveTable(){
     var boat = new Boat('name', 100, 10, 1000);
-
+    boat.getPlace();
     if(boat.table === null)
-        throw new Error('* FAILED *  --- ' +arguments.callee.name);
+        console.log('* FAILED *  --- ' +arguments.callee.name);
     else
-        throw new Error('* PASSED * --- '+ arguments.callee.name);
+        console.log('* PASSED * --- '+ arguments.callee.name);
 }
 
+function testIsRightParent(){
 
-lalka = new Boat(100,12,23,45);
-//testIsHaveTblName();
-//testIsHaveTable();
+
+    if(Automobile.prototype.getName() != 'Vehicle')
+        console.log('* FAILED *  --- ' +arguments.callee.name);
+    else
+        console.log('* PASSED * --- '+ arguments.callee.name);
+}
+
+function testAllJson(){
+    loadJSON('vehicles.json', function(dat){
+        if(dat.length < 10)
+            console.log('* FAILED *  --- ' +arguments.callee.name);
+        else
+            console.log('* PASSED * --- '+ arguments.callee.name);
+    });
+}
+
+testIsHaveTblName();
+testIsHaveTable();
+testIsRightParent();
+testAllJson();
